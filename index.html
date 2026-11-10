@@ -1219,15 +1219,25 @@
   function nextStep() { showStep(currentStep + 1); }
   function prevStep() { showStep(currentStep - 1); }
 
+  // Auto-fill Prolific ID from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const pidFromUrl = urlParams.get('PROLIFIC_PID');
+  const prolificEl = document.getElementById('prolificId');
+  if (pidFromUrl) {
+    prolificEl.value = pidFromUrl;
+    prolificEl.readOnly = true;
+    prolificEl.style.background = 'var(--well)';
+  }
+
   // Consent + Prolific ID gate
   const consentEl = document.getElementById('consent');
-  const prolificEl = document.getElementById('prolificId');
   const startBtn = document.getElementById('startBtn');
   function checkStart() {
     startBtn.disabled = !(consentEl.checked && prolificEl.value.trim().length > 3);
   }
   consentEl.addEventListener('change', checkStart);
   prolificEl.addEventListener('input', checkStart);
+  checkStart();
 
   // Device-specific instructions
   document.getElementById('q_device').addEventListener('change', function() {
