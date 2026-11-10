@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vybe Usability Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Gabarito:wght@600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1f1418;
+      --ink2: #584c54;
+      --ink3: #756971;
+      --paper: #ffffff;
+      --well: rgba(31,20,24,0.06);
+      --rule: rgba(31,20,24,0.12);
+      --action: #ff4d9d;
+      --action-deep: #c4155c;
+      --action-soft: #ffe3ef;
+      --on-deep: #ffffff;
+      --radius-s: 8px;
+      --radius-m: 16px;
+      --radius-pill: 999px;
+    }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--ink);
+      background: #faf8f9;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 24px 16px 80px;
+    }
+
+    .study-header {
+      text-align: center;
+      padding: 40px 0 32px;
+    }
+    .study-header h1 {
+      font-family: 'Gabarito', sans-serif;
+      font-weight: 700;
+      font-size: 34px;
+      line-height: 38px;
+      letter-spacing: -0.34px;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .study-header .subtitle {
+      font-size: 16px;
+      color: var(--ink2);
+    }
+    .study-header .vybe-badge {
+      display: inline-block;
+      background: var(--action-soft);
+      color: var(--action-deep);
+      font-family: 'Jost', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 16px;
+      letter-spacing: 0.72px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      margin-bottom: 16px;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--paper);
+      border-bottom: 1px solid var(--rule);
+      padding: 12px 16px;
+    }
+    .progress-track {
+      height: 4px;
+      background: var(--well);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--action);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+    .progress-label {
+      font-family: 'Jost', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.72px;
+      text-transform: uppercase;
+      color: var(--ink3);
+      margin-top: 6px;
+    }
+
+    /* Steps */
+    .step { display: none; }
+    .step.active { display: block; }
+    .step-card {
+      background: var(--paper);
+      border-radius: var(--radius-m);
+      padding: 32px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(31,20,24,0.06);
+    }
+
+    h2 {
+      font-family: 'Gabarito', sans-serif;
+      font-weight: 600;
+      font-size: 22px;
+      line-height: 28px;
+      margin-bottom: 8px;
+    }
+    h3 {
+      font-family: 'Gabarito', sans-serif;
+      font-weight: 600;
+      font-size: 17px;
+      line-height: 22px;
+      margin-bottom: 8px;
+      margin-top: 24px;
+    }
+    h3:first-child { margin-top: 0; }
+
+    p, li {
+      color: var(--ink2);
+      margin-bottom: 12px;
+    }
+    ul, ol {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    .callout {
+      background: var(--action-soft);
+      border-radius: var(--radius-s);
+      padding: 16px;
+      margin: 16px 0;
+      color: var(--action-deep);
+      font-weight: 500;
+    }
+    .callout strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .callout-neutral {
+      background: var(--well);
+      border-radius: var(--radius-s);
+      padding: 16px;
+      margin: 16px 0;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .callout-neutral strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .recording-banner {
+      background: var(--action-deep);
+      color: var(--on-deep);
+      text-align: center;
+      padding: 14px 16px;
+      border-radius: var(--radius-s);
+      margin: 20px 0;
+      font-family: 'Gabarito', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: 0.5px;
+    }
+    .recording-banner.stop {
+      background: var(--ink);
+    }
+
+    .scenario {
+      background: var(--well);
+      border-radius: var(--radius-s);
+      padding: 16px;
+      margin: 12px 0;
+      font-style: italic;
+      color: var(--ink);
+      border-left: 3px solid var(--action);
+    }
+    .scenario-label {
+      font-style: normal;
+      font-family: 'Jost', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.72px;
+      text-transform: uppercase;
+      color: var(--action-deep);
+      margin-bottom: 6px;
+    }
+
+    .prompt-block {
+      background: var(--well);
+      border-radius: var(--radius-s);
+      padding: 20px;
+      margin: 20px 0;
+      border-left: 3px solid var(--action);
+    }
+    .prompt-block .prompt-label {
+      font-family: 'Jost', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.72px;
+      text-transform: uppercase;
+      color: var(--action-deep);
+      margin-bottom: 8px;
+    }
+    .prompt-block p {
+      color: var(--ink);
+      margin-bottom: 0;
+    }
+
+    /* Form elements */
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 18px;
+      color: var(--ink);
+      margin-bottom: 6px;
+      margin-top: 20px;
+    }
+    label:first-child { margin-top: 0; }
+
+    textarea, input[type="text"], input[type="url"], input[type="email"], input[type="number"], select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-s);
+      font-family: 'Jost', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--ink);
+      background: var(--paper);
+      transition: border-color 0.2s;
+    }
+    textarea:focus, input:focus, select:focus {
+      outline: none;
+      border-color: var(--action);
+      box-shadow: 0 0 0 3px var(--action-soft);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    textarea.short {
+      min-height: 60px;
+    }
+
+    .optional-note {
+      font-size: 13px;
+      color: var(--ink3);
+      font-weight: 400;
+      font-style: italic;
+    }
+
+    /* Rating: 1-10 scale */
+    .rating-10 {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .rating-10 input[type="radio"] { display: none; }
+    .rating-10 label {
+      flex: 1;
+      min-width: 36px;
+      text-align: center;
+      padding: 10px 0;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-s);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 15px;
+      margin: 0;
+      transition: all 0.2s;
+      color: var(--ink2);
+    }
+    .rating-10 input[type="radio"]:checked + label {
+      background: var(--action-deep);
+      color: var(--on-deep);
+      border-color: var(--action-deep);
+    }
+
+    /* Rating: 1-5 SUS scale */
+    .rating-5 {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .rating-5 input[type="radio"] { display: none; }
+    .rating-5 label {
+      flex: 1;
+      text-align: center;
+      padding: 10px 0;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-s);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 15px;
+      margin: 0;
+      transition: all 0.2s;
+      color: var(--ink2);
+    }
+    .rating-5 input[type="radio"]:checked + label {
+      background: var(--action-deep);
+      color: var(--on-deep);
+      border-color: var(--action-deep);
+    }
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--ink3);
+      margin-top: 4px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .checkbox-row input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: var(--action-deep);
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+    .checkbox-row span {
+      color: var(--ink2);
+      font-size: 15px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 32px;
+      border: none;
+      border-radius: var(--radius-pill);
+      font-family: 'Jost', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      min-height: 48px;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary {
+      background: var(--action-deep);
+      color: var(--on-deep);
+    }
+    .btn-primary:hover:not(:disabled) { opacity: 0.9; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--action-deep);
+      border: 1px solid var(--rule);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      justify-content: space-between;
+    }
+
+    /* Timer */
+    .timer {
+      font-family: 'Gabarito', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--ink3);
+      text-align: center;
+      padding: 12px;
+      background: var(--well);
+      border-radius: var(--radius-s);
+      margin: 16px 0;
+    }
+    .timer.running { color: var(--action-deep); }
+
+    /* Thank you */
+    .thank-you { text-align: center; padding: 48px 24px; }
+    .thank-you h2 { font-size: 34px; margin-bottom: 16px; }
+    .completion-code {
+      display: inline-block;
+      background: var(--well);
+      padding: 16px 32px;
+      border-radius: var(--radius-s);
+      font-family: 'Gabarito', sans-serif;
+      font-weight: 700;
+      font-size: 28px;
+      letter-spacing: 2px;
+      color: var(--action-deep);
+      margin: 16px 0;
+      user-select: all;
+    }
+
+    .step-number {
+      display: inline-block;
+      background: var(--action-deep);
+      color: var(--on-deep);
+      font-family: 'Gabarito', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      text-align: center;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .info-item {
+      background: var(--well);
+      border-radius: var(--radius-s);
+      padding: 12px;
+    }
+    .info-item .val {
+      font-family: 'Gabarito', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--ink);
+    }
+    .info-item .desc {
+      font-size: 13px;
+      color: var(--ink3);
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 28px 0;
+    }
+
+    .sus-item {
+      margin-bottom: 24px;
+    }
+    .sus-item label.sus-label {
+      font-weight: 600;
+      font-size: 15px;
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .step-card { padding: 24px 16px; }
+      .study-header h1 { font-size: 28px; }
+      .info-grid { grid-template-columns: 1fr; }
+      .rating-10 label { min-width: 28px; padding: 8px 0; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="progress-bar">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">Getting started</div>
+</div>
+
+<div class="container">
+
+  <!-- ============================================================ -->
+  <!-- STEP 0: Welcome & Consent -->
+  <!-- ============================================================ -->
+  <div class="step active" data-step="0">
+    <div class="study-header">
+      <div class="vybe-badge">Usability Study</div>
+      <h1>Welcome to the Vybe Study</h1>
+      <p class="subtitle">Help us understand first-time experiences with a relationship app</p>
+    </div>
+    <div class="step-card">
+      <p>Thank you for participating in this study! You'll be downloading and exploring a real app called <strong>Vybe</strong> while screen recording your phone.</p>
+
+      <div class="callout-neutral">
+        <strong>This is not a test.</strong>
+        There are no right or wrong answers. We are studying the app, not you. If something is confusing or unclear, that's exactly the kind of feedback we need. Your honest reactions — positive or negative — are what make this study valuable.
+      </div>
+
+      <h3>What you'll do</h3>
+      <ol>
+        <li>Answer a few background questions</li>
+        <li>Download the free Vybe app on your phone</li>
+        <li>Screen record as you complete guided tasks</li>
+        <li>Send a real invitation to someone you know</li>
+        <li>Answer a questionnaire about your experience</li>
+        <li>Upload your screen recording</li>
+      </ol>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="val">~45 min</div>
+          <div class="desc">Estimated time</div>
+        </div>
+        <div class="info-item">
+          <div class="val">9 steps</div>
+          <div class="desc">Step-by-step guided</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        <strong>Before you start, you'll need:</strong>
+        A smartphone (iOS or Android) that can screen record. You must NOT have used Vybe before. You'll need one real contact you'd be willing to invite.
+      </div>
+
+      <p>Your screen recording and responses will be reviewed to gather data about the app. Recordings will not be shared publicly, and only the research team will have access to them. If you have questions at any point, please don't hesitate to reach out.</p>
+
+      <label for="prolificId">Your Prolific ID *</label>
+      <input type="text" id="prolificId" placeholder="e.g. 5f3a2b1c4d..." required>
+
+      <div class="checkbox-row" style="margin-top: 20px;">
+        <input type="checkbox" id="consent">
+        <span>I have not used Vybe before and I consent to participating in this study under the terms described above.</span>
+      </div>
+
+      <div class="btn-row" style="justify-content: flex-end;">
+        <button class="btn btn-primary" onclick="nextStep()" id="startBtn" disabled>Get Started</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- STEP 1: Background -->
+  <!-- ============================================================ -->
+  <div class="step" data-step="1">
+    <div class="step-card">
+      <h2><span class="step-number">1</span> About You</h2>
+      <p>Let's start by gathering some basic information. Please type your responses.</p>
+
+      <label for="q_age">How old are you? *</label>
+      <input type="number" id="q_age" placeholder="e.g. 28" min="18" max="99">
+
+      <label for="q_occupation">What is your occupation? *</label>
+      <input type="text" id="q_occupation" placeholder="e.g. teacher, student, software engineer...">
+
+      <label for="q_device">What phone are you using? *</label>
+      <select id="q_device" required>
+        <option value="">Select...</option>
+        <option value="iphone">iPhone (iOS)</option>
+        <option value="android">Android</option>
+      </select>
+
+      <label for="q_relationshipStatus">What is your relationship status? *</label>
+      <select id="q_relationshipStatus">
+        <option value="">Select...</option>
+        <option value="single">Single</option>
+        <option value="in_relationship">In a relationship</option>
+        <option value="married">Married / Domestic partnership</option>
+        <option value="other">Other / Prefer not to say</option>
+      </select>
+
+      <label for="q_socialApps">What apps do you currently use to stay in touch with close friends, family, or a partner? *</label>
+      <textarea id="q_socialApps" class="short" placeholder="e.g. iMessage, WhatsApp, Snapchat, Instagram..."></textarea>
+
+      <label for="q_triedRelationshipApps">Have you ever used an app specifically designed for relationships (e.g. Couples, Between, Locket, etc.)?</label>
+      <textarea id="q_triedRelationshipApps" class="short" placeholder="If yes, which ones? What was your experience?"></textarea>
+
+      <label for="q_comfortInviting">How comfortable are you with inviting someone to try a new app? *</label>
+      <div class="rating-10" id="rg_comfortInviting">
+        <input type="radio" name="r_comfortInviting" id="r_comfortInviting_1" value="1"><label for="r_comfortInviting_1">1</label>
+        <input type="radio" name="r_comfortInviting" id="r_comfortInviting_2" value="2"><label for="r_comfortInviting_2">2</label>
+        <input type="radio" name="r_comfortInviting" id="r_comfortInviting_3" value="3"><label for="r_comfortInviting_3">3</label>
+        <input type="radio" name="r_comfortInviting" id="r_comfortInviting_4" value="4"><label for="r_comfortInviting_4">4</label>
+        <input type="radio" name="r_comfortInviting" id="r_comfortInviting_5" value="5"><label for="r_comfortInviting_5">5</label>
+        <input type="radio" name="r_comfortInviting" id="r_comfortInviting_6" value="6"><label for="r_comfortInviting_6">6</label>
+        <input type="radio" name="r_comfortInviting" id="r_comfortInviting_7" value="7"><label for="r_comfortInviting_7">7</label>
+        <input type="radio" name="r_comfortInviting" id="r_comfortInviting_8" value="8"><label for="r_comfortInviting_8">8</label>
+        <input type="radio" name="r_comfortInviting" id="r_comfortInviting_9" value="9"><label for="r_comfortInviting_9">9</label>
+        <input type="radio" name="r_comfortInviting" id="r_comfortInviting_10" value="10"><label for="r_comfortInviting_10">10</label>
+      </div>
+      <div class="scale-labels"><span>Very uncomfortable</span><span>Very comfortable</span></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- STEP 2: Setup -->
+  <!-- ============================================================ -->
+  <div class="step" data-step="2">
+    <div class="step-card">
+      <h2><span class="step-number">2</span> Setup</h2>
+      <p>Before exploring Vybe, let's get your phone ready.</p>
+
+      <h3>Download Vybe</h3>
+      <p>Search for <strong>"Vybe"</strong> in the App Store (iPhone) or Google Play Store (Android) and install it. <strong>Do NOT open it yet.</strong></p>
+
+      <h3>Start screen recording</h3>
+      <div id="iosInstructions" style="display:none;">
+        <p><strong>iPhone:</strong> Open Control Center (swipe down from top-right corner). Tap the screen recording button (circle icon). You'll see a 3-second countdown, then recording starts.</p>
+        <p>If you don't see it, go to Settings &gt; Control Center and add "Screen Recording."</p>
+        <p><strong>To enable audio narration:</strong> long-press the screen recording button and turn on Microphone before starting.</p>
+      </div>
+      <div id="androidInstructions" style="display:none;">
+        <p><strong>Android:</strong> Swipe down from the top of your screen to open Quick Settings. Tap "Screen Recorder" or "Screen Record."</p>
+        <p><strong>To enable audio narration:</strong> When prompted, choose to record audio from your microphone.</p>
+      </div>
+
+      <div class="callout">
+        <strong>We'd love to hear you think aloud.</strong>
+        Narrating your thoughts as you use the app is the most valuable part of the recording — say what you notice, what you expect, and what confuses you. Enable your microphone before you start recording.
+        <br><br>
+        If you'd rather not narrate, that's OK. You'll have the option to type your thoughts at key moments instead.
+      </div>
+
+      <label>Will you be narrating aloud during the recording?</label>
+      <div class="rating-5" id="rg_narrateChoice">
+        <input type="radio" name="r_narrateChoice" id="r_narrate_yes" value="narrate"><label for="r_narrate_yes">Yes, I'll narrate</label>
+        <input type="radio" name="r_narrateChoice" id="r_narrate_no" value="type"><label for="r_narrate_no">No, I'll type instead</label>
+      </div>
+
+      <div class="checkbox-row" style="margin-top: 24px;">
+        <input type="checkbox" id="appDownloaded">
+        <span>I've downloaded Vybe (but haven't opened it yet)</span>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="recordingStarted">
+        <span>Screen recording is running</span>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button class="btn btn-primary" onclick="nextStep()" id="setupBtn" disabled>I'm Ready</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- STEP 3: First Impressions -->
+  <!-- ============================================================ -->
+  <div class="step" data-step="3">
+    <div class="step-card">
+      <h2><span class="step-number">3</span> First Impressions</h2>
+
+      <div class="recording-banner">SCREEN RECORDING SHOULD BE RUNNING</div>
+
+      <div class="prompt-block">
+        <div class="prompt-label">Prompt 1</div>
+        <p>Open Vybe for the first time. <strong>Before tapping anything,</strong> just look at what you see. What do you think this app helps you do? Who do you imagine using it with? What do you expect will happen after you connect with someone?</p>
+      </div>
+
+      <div class="narrate-fallback" style="display:none;">
+        <label for="q_firstImpression">What do you think this app helps you do?</label>
+        <textarea id="q_firstImpression" class="short" placeholder="Based on what you see right now..."></textarea>
+
+        <label for="q_whoWith">Who do you imagine using this with?</label>
+        <textarea id="q_whoWith" class="short" placeholder="A partner, friend, family member..."></textarea>
+
+        <label for="q_expectAfterLink">What do you expect will happen after you connect with someone?</label>
+        <textarea id="q_expectAfterLink" class="short" placeholder="What do you think the experience will be like?"></textarea>
+      </div>
+
+      <div class="checkbox-row" style="margin-top: 20px;">
+        <input type="checkbox" id="done_prompt1">
+        <span>Done</span>
+      </div>
+
+      <hr class="divider">
+
+      <div class="prompt-block">
+        <div class="prompt-label">Prompt 2</div>
+        <p>Now explore freely for 2-3 minutes. Look around the app. Don't worry about doing anything "right" — just tap around and see what's there. Talk through what you notice.</p>
+      </div>
+
+      <div class="timer" id="exploreTimer">2:00</div>
+      <div style="text-align:center;">
+        <button class="btn btn-secondary" onclick="startTimer(120, 'exploreTimer', 'timerBtn')" id="timerBtn">Start 2-Minute Timer</button>
+      </div>
+
+      <div class="checkbox-row" style="margin-top: 20px;">
+        <input type="checkbox" id="done_prompt2">
+        <span>Done</span>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- STEP 4: Onboarding -->
+  <!-- ============================================================ -->
+  <div class="step" data-step="4">
+    <div class="step-card">
+      <h2><span class="step-number">4</span> Onboarding</h2>
+
+      <div class="prompt-block">
+        <div class="prompt-label">Prompt 3</div>
+        <p>Complete the signup and onboarding process in Vybe. As you go, talk through anything that's confusing, anything you like, and any choices you make and why.</p>
+      </div>
+
+      <div class="narrate-fallback" style="display:none;">
+        <label for="q_onboardNotes">Notes on the onboarding process:</label>
+        <textarea id="q_onboardNotes" placeholder="What was confusing? What did you like? What choices did you make?"></textarea>
+      </div>
+
+      <div class="checkbox-row" style="margin-top: 20px;">
+        <input type="checkbox" id="done_prompt3">
+        <span>Done — I've completed onboarding</span>
+      </div>
+
+      <hr class="divider">
+
+      <label>On a scale of 1-10, how would you rate the onboarding experience? *</label>
+      <div class="rating-10">
+        <input type="radio" name="r_onboarding" id="r_onboarding_1" value="1"><label for="r_onboarding_1">1</label>
+        <input type="radio" name="r_onboarding" id="r_onboarding_2" value="2"><label for="r_onboarding_2">2</label>
+        <input type="radio" name="r_onboarding" id="r_onboarding_3" value="3"><label for="r_onboarding_3">3</label>
+        <input type="radio" name="r_onboarding" id="r_onboarding_4" value="4"><label for="r_onboarding_4">4</label>
+        <input type="radio" name="r_onboarding" id="r_onboarding_5" value="5"><label for="r_onboarding_5">5</label>
+        <input type="radio" name="r_onboarding" id="r_onboarding_6" value="6"><label for="r_onboarding_6">6</label>
+        <input type="radio" name="r_onboarding" id="r_onboarding_7" value="7"><label for="r_onboarding_7">7</label>
+        <input type="radio" name="r_onboarding" id="r_onboarding_8" value="8"><label for="r_onboarding_8">8</label>
+        <input type="radio" name="r_onboarding" id="r_onboarding_9" value="9"><label for="r_onboarding_9">9</label>
+        <input type="radio" name="r_onboarding" id="r_onboarding_10" value="10"><label for="r_onboarding_10">10</label>
+      </div>
+      <div class="scale-labels"><span>1 = Extremely frustrating</span><span>10 = Extremely easy</span></div>
+
+      <label for="q_onboardingWhy">Why did you give it that rating?</label>
+      <textarea id="q_onboardingWhy" class="short" placeholder="What made it easy or difficult?"></textarea>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- STEP 5: Feature Discovery -->
+  <!-- ============================================================ -->
+  <div class="step" data-step="5">
+    <div class="step-card">
+      <h2><span class="step-number">5</span> Feature Discovery</h2>
+
+      <div class="prompt-block">
+        <div class="prompt-label">Prompt 4</div>
+        <p>Look through the app and find the features called <strong>"Pulse"</strong> and <strong>"Check-in."</strong> Without looking anything up, talk through what you think each one does and how they're different.</p>
+      </div>
+
+      <div class="narrate-fallback" style="display:none;">
+        <label for="q_whatIsPulse">What is a "Pulse"? What do you think it does?</label>
+        <textarea id="q_whatIsPulse" class="short" placeholder="Your best guess..."></textarea>
+
+        <label for="q_whatIsCheckin">What is a "Check-in"? What do you think it does?</label>
+        <textarea id="q_whatIsCheckin" class="short" placeholder="Your best guess..."></textarea>
+
+        <label for="q_pulseDifference">What's the difference between them?</label>
+        <textarea id="q_pulseDifference" class="short" placeholder="How are they different, if at all?"></textarea>
+      </div>
+
+      <div class="checkbox-row" style="margin-top: 20px;">
+        <input type="checkbox" id="done_prompt4">
+        <span>Done</span>
+      </div>
+
+      <hr class="divider">
+
+      <div class="prompt-block">
+        <div class="prompt-label">Prompt 5 — Scenarios</div>
+        <p>For each scenario below, try to do it in the app. Talk through which feature you choose and why.</p>
+      </div>
+
+      <div class="scenario">
+        <div class="scenario-label">Scenario A</div>
+        You're heading into a difficult meeting and want someone important to you to know you're thinking of them, but you don't want to start a conversation.
+      </div>
+
+      <div class="narrate-fallback" style="display:none;">
+        <label for="q_scenarioA">What did you do in the app?</label>
+        <textarea id="q_scenarioA" class="short" placeholder="Which feature did you choose and why?"></textarea>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="done_scenarioA">
+        <span>Done</span>
+      </div>
+
+      <div class="scenario">
+        <div class="scenario-label">Scenario B</div>
+        Something small happened during your day. You'd like your partner or friend to see it later, and you'd also like to see something from their day.
+      </div>
+
+      <div class="narrate-fallback" style="display:none;">
+        <label for="q_scenarioB">What did you do in the app?</label>
+        <textarea id="q_scenarioB" class="short" placeholder="Which feature did you choose and why?"></textarea>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="done_scenarioB">
+        <span>Done</span>
+      </div>
+
+      <hr class="divider">
+
+      <div class="prompt-block">
+        <div class="prompt-label">Prompt 6</div>
+        <p>Explore any other features you notice (moments, calendar, widgets, etc.). For each one, talk through what you think it does.</p>
+      </div>
+
+      <div class="narrate-fallback" style="display:none;">
+        <label for="q_otherFeatures">Features you found and what you think they do:</label>
+        <textarea id="q_otherFeatures" placeholder="Feature name → what you think it does..."></textarea>
+      </div>
+
+      <div class="checkbox-row" style="margin-top: 20px;">
+        <input type="checkbox" id="done_prompt6">
+        <span>Done</span>
+      </div>
+
+      <hr class="divider">
+
+      <label>On a scale of 1-10, how easy was it to understand what each feature does? *</label>
+      <div class="rating-10">
+        <input type="radio" name="r_featureClarity" id="r_featureClarity_1" value="1"><label for="r_featureClarity_1">1</label>
+        <input type="radio" name="r_featureClarity" id="r_featureClarity_2" value="2"><label for="r_featureClarity_2">2</label>
+        <input type="radio" name="r_featureClarity" id="r_featureClarity_3" value="3"><label for="r_featureClarity_3">3</label>
+        <input type="radio" name="r_featureClarity" id="r_featureClarity_4" value="4"><label for="r_featureClarity_4">4</label>
+        <input type="radio" name="r_featureClarity" id="r_featureClarity_5" value="5"><label for="r_featureClarity_5">5</label>
+        <input type="radio" name="r_featureClarity" id="r_featureClarity_6" value="6"><label for="r_featureClarity_6">6</label>
+        <input type="radio" name="r_featureClarity" id="r_featureClarity_7" value="7"><label for="r_featureClarity_7">7</label>
+        <input type="radio" name="r_featureClarity" id="r_featureClarity_8" value="8"><label for="r_featureClarity_8">8</label>
+        <input type="radio" name="r_featureClarity" id="r_featureClarity_9" value="9"><label for="r_featureClarity_9">9</label>
+        <input type="radio" name="r_featureClarity" id="r_featureClarity_10" value="10"><label for="r_featureClarity_10">10</label>
+      </div>
+      <div class="scale-labels"><span>1 = Very unclear</span><span>10 = Very clear</span></div>
+
+      <label for="q_featureClarityWhy">Why did you give it that rating?</label>
+      <textarea id="q_featureClarityWhy" class="short" placeholder="What was clear or confusing?"></textarea>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- STEP 6: Invitation Loop -->
+  <!-- ============================================================ -->
+  <div class="step" data-step="6">
+    <div class="step-card">
+      <h2><span class="step-number">6</span> Invitation</h2>
+
+      <div class="prompt-block">
+        <div class="prompt-label">Prompt 7</div>
+        <p>Try to invite a real person to connect with you on Vybe. Choose someone you'd genuinely want to use this app with — a partner, close friend, or family member. Talk through how you find the feature, what options you see, and how it feels to send it.</p>
+      </div>
+
+      <div class="callout">
+        <strong>Your invitee does NOT need to accept.</strong>
+        We're studying your experience of the invitation process, not whether they respond. You'll complete the study regardless.
+      </div>
+
+      <div class="narrate-fallback" style="display:none;">
+        <label for="q_inviteNotes">Notes on the invitation process:</label>
+        <textarea id="q_inviteNotes" placeholder="How did you find it? What options did you see? Was anything confusing? How did it feel?"></textarea>
+      </div>
+
+      <div class="checkbox-row" style="margin-top: 20px;">
+        <input type="checkbox" id="done_prompt7">
+        <span>Done — I sent the invitation (or attempted to)</span>
+      </div>
+
+      <hr class="divider">
+
+      <label for="q_whoInvited">Who did you choose to invite? (relationship only) *</label>
+      <input type="text" id="q_whoInvited" placeholder="e.g. my partner, my best friend, my sister...">
+
+      <label for="q_whyThem">Why did you choose this person?</label>
+      <textarea id="q_whyThem" class="short" placeholder="What made you think of them?"></textarea>
+
+      <label for="q_inviteExpect">What do you expect your invitee will see or experience?</label>
+      <textarea id="q_inviteExpect" class="short" placeholder="What do you think happens on their end?"></textarea>
+
+      <hr class="divider">
+
+      <label>On a scale of 1-10, how easy was it to invite someone? *</label>
+      <div class="rating-10">
+        <input type="radio" name="r_inviteEase" id="r_inviteEase_1" value="1"><label for="r_inviteEase_1">1</label>
+        <input type="radio" name="r_inviteEase" id="r_inviteEase_2" value="2"><label for="r_inviteEase_2">2</label>
+        <input type="radio" name="r_inviteEase" id="r_inviteEase_3" value="3"><label for="r_inviteEase_3">3</label>
+        <input type="radio" name="r_inviteEase" id="r_inviteEase_4" value="4"><label for="r_inviteEase_4">4</label>
+        <input type="radio" name="r_inviteEase" id="r_inviteEase_5" value="5"><label for="r_inviteEase_5">5</label>
+        <input type="radio" name="r_inviteEase" id="r_inviteEase_6" value="6"><label for="r_inviteEase_6">6</label>
+        <input type="radio" name="r_inviteEase" id="r_inviteEase_7" value="7"><label for="r_inviteEase_7">7</label>
+        <input type="radio" name="r_inviteEase" id="r_inviteEase_8" value="8"><label for="r_inviteEase_8">8</label>
+        <input type="radio" name="r_inviteEase" id="r_inviteEase_9" value="9"><label for="r_inviteEase_9">9</label>
+        <input type="radio" name="r_inviteEase" id="r_inviteEase_10" value="10"><label for="r_inviteEase_10">10</label>
+      </div>
+      <div class="scale-labels"><span>1 = Extremely frustrating</span><span>10 = Extremely easy</span></div>
+
+      <label for="q_inviteEaseWhy">Why did you give it that rating?</label>
+      <textarea id="q_inviteEaseWhy" class="short" placeholder="What made it easy or difficult?"></textarea>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- STEP 7: Overall Feelings + Stop Recording + SUS + Reflection -->
+  <!-- ============================================================ -->
+  <div class="step" data-step="7">
+    <div class="step-card">
+      <h2><span class="step-number">7</span> Overall Feelings</h2>
+
+      <div class="prompt-block">
+        <div class="prompt-label">Prompt 8</div>
+        <p>How do you feel about Vybe overall? Talk through what you liked and disliked about it.</p>
+      </div>
+
+      <div class="narrate-fallback" style="display:none;">
+        <label for="q_overallFeelings">What did you like and dislike?</label>
+        <textarea id="q_overallFeelings" placeholder="Your overall impressions..."></textarea>
+      </div>
+
+      <div class="checkbox-row" style="margin-top: 20px;">
+        <input type="checkbox" id="done_prompt8">
+        <span>Done</span>
+      </div>
+
+      <div class="recording-banner stop">STOP SCREEN RECORDING NOW</div>
+      <p style="text-align:center;">Please proceed to the questionnaire below.</p>
+
+      <hr class="divider">
+
+      <h2>System Usability Questionnaire</h2>
+      <p>Now that you've finished the tasks, take a few moments to score the following ten statements.</p>
+
+      <div class="sus-item">
+        <label class="sus-label">I think that I would use this app frequently. *</label>
+        <div class="rating-5">
+          <input type="radio" name="sus_1" id="sus_1_1" value="1"><label for="sus_1_1">1</label>
+          <input type="radio" name="sus_1" id="sus_1_2" value="2"><label for="sus_1_2">2</label>
+          <input type="radio" name="sus_1" id="sus_1_3" value="3"><label for="sus_1_3">3</label>
+          <input type="radio" name="sus_1" id="sus_1_4" value="4"><label for="sus_1_4">4</label>
+          <input type="radio" name="sus_1" id="sus_1_5" value="5"><label for="sus_1_5">5</label>
+        </div>
+        <div class="scale-labels"><span>Not at all true</span><span>Very true</span></div>
+      </div>
+
+      <div class="sus-item">
+        <label class="sus-label">I find the app unnecessarily complex. *</label>
+        <div class="rating-5">
+          <input type="radio" name="sus_2" id="sus_2_1" value="1"><label for="sus_2_1">1</label>
+          <input type="radio" name="sus_2" id="sus_2_2" value="2"><label for="sus_2_2">2</label>
+          <input type="radio" name="sus_2" id="sus_2_3" value="3"><label for="sus_2_3">3</label>
+          <input type="radio" name="sus_2" id="sus_2_4" value="4"><label for="sus_2_4">4</label>
+          <input type="radio" name="sus_2" id="sus_2_5" value="5"><label for="sus_2_5">5</label>
+        </div>
+        <div class="scale-labels"><span>Not at all true</span><span>Very true</span></div>
+      </div>
+
+      <div class="sus-item">
+        <label class="sus-label">I think the app is easy to use. *</label>
+        <div class="rating-5">
+          <input type="radio" name="sus_3" id="sus_3_1" value="1"><label for="sus_3_1">1</label>
+          <input type="radio" name="sus_3" id="sus_3_2" value="2"><label for="sus_3_2">2</label>
+          <input type="radio" name="sus_3" id="sus_3_3" value="3"><label for="sus_3_3">3</label>
+          <input type="radio" name="sus_3" id="sus_3_4" value="4"><label for="sus_3_4">4</label>
+          <input type="radio" name="sus_3" id="sus_3_5" value="5"><label for="sus_3_5">5</label>
+        </div>
+        <div class="scale-labels"><span>Not at all true</span><span>Very true</span></div>
+      </div>
+
+      <div class="sus-item">
+        <label class="sus-label">I need the support of a technical person to be able to use this app. *</label>
+        <div class="rating-5">
+          <input type="radio" name="sus_4" id="sus_4_1" value="1"><label for="sus_4_1">1</label>
+          <input type="radio" name="sus_4" id="sus_4_2" value="2"><label for="sus_4_2">2</label>
+          <input type="radio" name="sus_4" id="sus_4_3" value="3"><label for="sus_4_3">3</label>
+          <input type="radio" name="sus_4" id="sus_4_4" value="4"><label for="sus_4_4">4</label>
+          <input type="radio" name="sus_4" id="sus_4_5" value="5"><label for="sus_4_5">5</label>
+        </div>
+        <div class="scale-labels"><span>Not at all true</span><span>Very true</span></div>
+      </div>
+
+      <div class="sus-item">
+        <label class="sus-label">I find the app easy to navigate. *</label>
+        <div class="rating-5">
+          <input type="radio" name="sus_5" id="sus_5_1" value="1"><label for="sus_5_1">1</label>
+          <input type="radio" name="sus_5" id="sus_5_2" value="2"><label for="sus_5_2">2</label>
+          <input type="radio" name="sus_5" id="sus_5_3" value="3"><label for="sus_5_3">3</label>
+          <input type="radio" name="sus_5" id="sus_5_4" value="4"><label for="sus_5_4">4</label>
+          <input type="radio" name="sus_5" id="sus_5_5" value="5"><label for="sus_5_5">5</label>
+        </div>
+        <div class="scale-labels"><span>Not at all true</span><span>Very true</span></div>
+      </div>
+
+      <div class="sus-item">
+        <label class="sus-label">There is inconsistency within the app. *</label>
+        <div class="rating-5">
+          <input type="radio" name="sus_6" id="sus_6_1" value="1"><label for="sus_6_1">1</label>
+          <input type="radio" name="sus_6" id="sus_6_2" value="2"><label for="sus_6_2">2</label>
+          <input type="radio" name="sus_6" id="sus_6_3" value="3"><label for="sus_6_3">3</label>
+          <input type="radio" name="sus_6" id="sus_6_4" value="4"><label for="sus_6_4">4</label>
+          <input type="radio" name="sus_6" id="sus_6_5" value="5"><label for="sus_6_5">5</label>
+        </div>
+        <div class="scale-labels"><span>Not at all true</span><span>Very true</span></div>
+      </div>
+
+      <div class="sus-item">
+        <label class="sus-label">I imagine that most people would learn to use this app quickly. *</label>
+        <div class="rating-5">
+          <input type="radio" name="sus_7" id="sus_7_1" value="1"><label for="sus_7_1">1</label>
+          <input type="radio" name="sus_7" id="sus_7_2" value="2"><label for="sus_7_2">2</label>
+          <input type="radio" name="sus_7" id="sus_7_3" value="3"><label for="sus_7_3">3</label>
+          <input type="radio" name="sus_7" id="sus_7_4" value="4"><label for="sus_7_4">4</label>
+          <input type="radio" name="sus_7" id="sus_7_5" value="5"><label for="sus_7_5">5</label>
+        </div>
+        <div class="scale-labels"><span>Not at all true</span><span>Very true</span></div>
+      </div>
+
+      <div class="sus-item">
+        <label class="sus-label">I feel confident using the app. *</label>
+        <div class="rating-5">
+          <input type="radio" name="sus_8" id="sus_8_1" value="1"><label for="sus_8_1">1</label>
+          <input type="radio" name="sus_8" id="sus_8_2" value="2"><label for="sus_8_2">2</label>
+          <input type="radio" name="sus_8" id="sus_8_3" value="3"><label for="sus_8_3">3</label>
+          <input type="radio" name="sus_8" id="sus_8_4" value="4"><label for="sus_8_4">4</label>
+          <input type="radio" name="sus_8" id="sus_8_5" value="5"><label for="sus_8_5">5</label>
+        </div>
+        <div class="scale-labels"><span>Not at all true</span><span>Very true</span></div>
+      </div>
+
+      <div class="sus-item">
+        <label class="sus-label">I need to learn a lot of things before I can start using this app. *</label>
+        <div class="rating-5">
+          <input type="radio" name="sus_9" id="sus_9_1" value="1"><label for="sus_9_1">1</label>
+          <input type="radio" name="sus_9" id="sus_9_2" value="2"><label for="sus_9_2">2</label>
+          <input type="radio" name="sus_9" id="sus_9_3" value="3"><label for="sus_9_3">3</label>
+          <input type="radio" name="sus_9" id="sus_9_4" value="4"><label for="sus_9_4">4</label>
+          <input type="radio" name="sus_9" id="sus_9_5" value="5"><label for="sus_9_5">5</label>
+        </div>
+        <div class="scale-labels"><span>Not at all true</span><span>Very true</span></div>
+      </div>
+
+      <div class="sus-item">
+        <label class="sus-label">The main user flow is clear. *</label>
+        <div class="rating-5">
+          <input type="radio" name="sus_10" id="sus_10_1" value="1"><label for="sus_10_1">1</label>
+          <input type="radio" name="sus_10" id="sus_10_2" value="2"><label for="sus_10_2">2</label>
+          <input type="radio" name="sus_10" id="sus_10_3" value="3"><label for="sus_10_3">3</label>
+          <input type="radio" name="sus_10" id="sus_10_4" value="4"><label for="sus_10_4">4</label>
+          <input type="radio" name="sus_10" id="sus_10_5" value="5"><label for="sus_10_5">5</label>
+        </div>
+        <div class="scale-labels"><span>Not at all true</span><span>Very true</span></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- STEP 8: Open-Ended Reflection -->
+  <!-- ============================================================ -->
+  <div class="step" data-step="8">
+    <div class="step-card">
+      <h2><span class="step-number">8</span> Reflection</h2>
+      <p>Almost done! A few final questions about your experience.</p>
+
+      <label for="q_whatIsVybe">In your own words, what is Vybe for? *</label>
+      <textarea id="q_whatIsVybe" placeholder="Now that you've explored it..."></textarea>
+
+      <label for="q_whoNow">After exploring, who would you most want to use this with? Is that the same or different from your first impression? *</label>
+      <textarea id="q_whoNow" placeholder="Same person, different person, or no one?"></textarea>
+
+      <label for="q_mostConfusing">What was the most confusing part of your experience?</label>
+      <textarea id="q_mostConfusing" placeholder="The biggest point of friction..."></textarea>
+
+      <label for="q_mostAppealing">What was the most appealing part?</label>
+      <textarea id="q_mostAppealing" placeholder="What felt interesting, useful, or well-designed?"></textarea>
+
+      <label for="q_wantedButCouldnt">Was there anything you wanted to do but couldn't figure out how?</label>
+      <textarea id="q_wantedButCouldnt" class="short" placeholder="Any unmet expectations?"></textarea>
+
+      <label for="q_vsTexting">How does Vybe compare to just texting or using another app you already have? *</label>
+      <textarea id="q_vsTexting" placeholder="What does it offer that's different — or not?"></textarea>
+
+      <label for="q_continueUsing">Would you continue using Vybe after this study? Why or why not? *</label>
+      <textarea id="q_continueUsing" placeholder="Be honest — there are no right answers."></textarea>
+
+      <label for="q_anythingElse">Anything else you'd like to share?</label>
+      <textarea id="q_anythingElse" class="short" placeholder="Optional — any other thoughts, suggestions, or reactions."></textarea>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button class="btn btn-primary" onclick="nextStep()">Continue to Upload</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- STEP 9: Upload & Submit -->
+  <!-- ============================================================ -->
+  <div class="step" data-step="9">
+    <div class="step-card">
+      <h2><span class="step-number">9</span> Upload & Submit</h2>
+      <p>Last step! Upload your screen recording and submit your responses.</p>
+
+      <h3>Upload your screen recording</h3>
+      <ol>
+        <li>Make sure your screen recording has been stopped</li>
+        <li>Upload the video to this shared Google Drive folder:<br>
+          <a href="https://drive.google.com/drive/folders/16M236pY_4Xf07oC1ifmXjSO2xmZtMkyK?usp=sharing" target="_blank" style="color:var(--action-deep); font-weight:600;">Open Google Drive Upload Folder</a>
+        </li>
+        <li>Name your file with <strong>your Prolific ID</strong> (e.g., <code>5f3a2b1c4d.mp4</code>)</li>
+      </ol>
+
+      <div class="callout">
+        <strong>File naming is important!</strong>
+        Name your recording with your Prolific ID so we can match it to your responses.
+      </div>
+
+      <label for="q_driveLink">Paste the link to your uploaded recording, or type "uploaded" to confirm</label>
+      <input type="url" id="q_driveLink" placeholder="Google Drive link or 'uploaded'">
+
+      <label for="q_recordingLength">Approximately how long is your recording?</label>
+      <input type="text" id="q_recordingLength" placeholder="e.g. 25 minutes">
+
+      <div class="checkbox-row" style="margin-top: 20px;">
+        <input type="checkbox" id="confirmUpload">
+        <span>I've uploaded my screen recording to the shared folder</span>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+        <button class="btn btn-primary" onclick="submitStudy()" id="submitBtn" disabled>Submit Study</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- STEP 10: Thank You -->
+  <!-- ============================================================ -->
+  <div class="step" data-step="10">
+    <div class="thank-you step-card">
+      <h2>Thank you!</h2>
+      <p style="color:var(--ink2); font-size:18px;">Your responses have been saved. Copy this completion code and paste it back in Prolific:</p>
+      <div class="completion-code" id="completionCode">VYBE-XXXX</div>
+      <p style="color:var(--ink3); font-size:14px;">Click the code to select it, then copy and paste into Prolific.</p>
+      <div style="margin-top: 32px;">
+        <p style="color:var(--ink2);">Your perspective helps us build something better for real relationships. We appreciate your time.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const TOTAL_STEPS = 10;
+  let currentStep = 0;
+  let timerInterval = null;
+  let isNarrating = true;
+
+  const stepLabels = [
+    'Getting started',
+    'Step 1 of 9 — About you',
+    'Step 2 of 9 — Setup',
+    'Step 3 of 9 — First impressions',
+    'Step 4 of 9 — Onboarding',
+    'Step 5 of 9 — Feature discovery',
+    'Step 6 of 9 — Invitation',
+    'Step 7 of 9 — SUS questionnaire',
+    'Step 8 of 9 — Reflection',
+    'Step 9 of 9 — Upload',
+    'Complete'
+  ];
+
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    const target = document.querySelector(`[data-step="${n}"]`);
+    if (target) target.classList.add('active');
+    currentStep = n;
+
+    const pct = n === 0 ? 0 : Math.round((n / TOTAL_STEPS) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = stepLabels[n] || '';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function nextStep() { showStep(currentStep + 1); }
+  function prevStep() { showStep(currentStep - 1); }
+
+  // Consent + Prolific ID gate
+  const consentEl = document.getElementById('consent');
+  const prolificEl = document.getElementById('prolificId');
+  const startBtn = document.getElementById('startBtn');
+  function checkStart() {
+    startBtn.disabled = !(consentEl.checked && prolificEl.value.trim().length > 3);
+  }
+  consentEl.addEventListener('change', checkStart);
+  prolificEl.addEventListener('input', checkStart);
+
+  // Device-specific instructions
+  document.getElementById('q_device').addEventListener('change', function() {
+    document.getElementById('iosInstructions').style.display = this.value === 'iphone' ? 'block' : 'none';
+    document.getElementById('androidInstructions').style.display = this.value === 'android' ? 'block' : 'none';
+  });
+
+  // Narrate vs type toggle — show/hide fallback text fields
+  document.querySelectorAll('input[name="r_narrateChoice"]').forEach(el => {
+    el.addEventListener('change', function() {
+      isNarrating = this.value === 'narrate';
+      document.querySelectorAll('.narrate-fallback').forEach(fb => {
+        fb.style.display = isNarrating ? 'none' : 'block';
+      });
+    });
+  });
+
+  // Setup gate
+  const appDl = document.getElementById('appDownloaded');
+  const recStarted = document.getElementById('recordingStarted');
+  const setupBtn = document.getElementById('setupBtn');
+  function checkSetup() {
+    setupBtn.disabled = !(appDl.checked && recStarted.checked);
+  }
+  appDl.addEventListener('change', checkSetup);
+  recStarted.addEventListener('change', checkSetup);
+
+  // Submit gate
+  const confirmUpload = document.getElementById('confirmUpload');
+  const submitBtn = document.getElementById('submitBtn');
+  confirmUpload.addEventListener('change', function() {
+    submitBtn.disabled = !this.checked;
+  });
+
+  // Timer
+  function startTimer(seconds, elementId, btnId) {
+    const el = document.getElementById(elementId);
+    const btn = document.getElementById(btnId);
+    if (timerInterval) clearInterval(timerInterval);
+
+    let remaining = seconds;
+    el.classList.add('running');
+    btn.disabled = true;
+    btn.textContent = 'Timer running...';
+
+    timerInterval = setInterval(() => {
+      remaining--;
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      el.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+
+      if (remaining <= 0) {
+        clearInterval(timerInterval);
+        el.textContent = "Time's up! Move on when ready.";
+        el.classList.remove('running');
+        btn.textContent = 'Restart Timer';
+        btn.disabled = false;
+      }
+    }, 1000);
+  }
+
+  // Collect all responses
+  function collectResponses() {
+    const data = {
+      prolificId: document.getElementById('prolificId').value,
+      device: document.getElementById('q_device').value,
+      narrateOrType: isNarrating ? 'narrate' : 'type',
+      timestamp: new Date().toISOString(),
+    };
+
+    // All text inputs and textareas
+    document.querySelectorAll('textarea[id^="q_"], input[id^="q_"]').forEach(el => {
+      if (el.value.trim()) data[el.id] = el.value;
+    });
+
+    // All radio selections
+    document.querySelectorAll('input[type="radio"]:checked').forEach(el => {
+      data[el.name] = el.value;
+    });
+
+    // Selects
+    document.querySelectorAll('select[id^="q_"]').forEach(el => {
+      if (el.value) data[el.id] = el.value;
+    });
+
+    return data;
+  }
+
+  function submitStudy() {
+    const data = collectResponses();
+
+    // Store locally as backup
+    const key = 'vybe_study_' + data.prolificId;
+    localStorage.setItem(key, JSON.stringify(data));
+
+    // Download as JSON backup
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `vybe_study_${data.prolificId}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    showStep(10);
+  }
+</script>
+
+</body>
+</html>
